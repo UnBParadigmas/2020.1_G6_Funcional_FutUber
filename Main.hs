@@ -42,5 +42,10 @@ lerCidadesArquivo = do
         let nodes = splitSublist parsedList
         return (Map.fromList [(read (T.unpack (x!!0)) :: Int, T.unpack (x!!1))|x<-nodes])
 
+--https://stackoverflow.com/questions/12398458/how-to-group-similar-items-in-a-list-using-haskell
+agrupaEstradas :: (Eq a, Ord a) => [(a, b)] -> [(a, [b])]
+agrupaEstradas = map (\l -> (fst . head $ l, map snd l)) . groupBy ((==) `on` fst)
+          . sortBy (comparing fst)
+
 main :: IO ()
 main = return ()
