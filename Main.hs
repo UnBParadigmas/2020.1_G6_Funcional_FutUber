@@ -1,8 +1,15 @@
+module Main (main, grafo, inserirCidadeSemAdjacentes, adicionaCidadeAdjacente, parseAresta,lerCidadesArquivo,lerEstradasArquivo) where 
+
 import qualified Data.Maybe  as Maybe
 import qualified Data.Map as Map
+import qualified Data.Text as T
+import Data.List
+import Data.Function (on)
+import Data.Ord (comparing)
 
 
-type Vertice = String
+
+type Vertice = Int
 type Distancia = Int
 type Aresta = (Vertice, [(Vertice, Distancia)])
 type Grafo = [Aresta]
@@ -23,3 +30,17 @@ adicionaCidadeAdjacente cidade novaCidadeAdjacente distancia grafo = do
                     let cidadesAdjacentesAtuais = Map.lookup cidade mapGrafo
                     let valorCidadesAdjacentesAtuais = Maybe.fromJust cidadesAdjacentesAtuais
                     (novaCidadeAdjacente, distancia) : valorCidadesAdjacentesAtuais
+
+splitSublist :: [String] -> [[T.Text]]
+splitSublist [] = []
+splitSublist (x:xs) = T.splitOn (T.pack "\t") (T.pack x) : (splitSublist xs)
+
+lerCidadesArquivo = do
+        arquivo <- readFile "nodes.txt"
+        let nodesRaw = T.splitOn (T.pack "\n") (T.pack arquivo) --nodes = lista de T.Text. Ex: ["1\tMarginal-12","2\tMarginal-10B"]
+        let parsedList = [T.unpack x | x <- nodesRaw]
+        let nodes = splitSublist parsedList
+        return (Map.fromList [(read (T.unpack (x!!0)) :: Int, T.unpack (x!!1))|x<-nodes])
+
+main :: IO ()
+main = return ()
