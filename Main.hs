@@ -1,4 +1,4 @@
-module Main (main, grafo, inserirCidadeSemAdjacentes, adicionaCidadeAdjacente, parseAresta, lerCidadesArquivo, lerEstradasArquivo) where 
+module Main (main, grafo, inserirCidadeSemAdjacentes, adicionaCidadeAdjacente, mostraCidadesArquivo, lerCidadesArquivo, lerEstradasArquivo) where 
 
 import qualified Data.Maybe  as Maybe
 import qualified Data.Map as Map
@@ -6,6 +6,7 @@ import qualified Data.Text as T
 import Data.List
 import Data.Function (on)
 import Data.Ord (comparing)
+import Data.Graph (Table)
 
 
 
@@ -35,6 +36,7 @@ splitSublist :: [String] -> [[T.Text]]
 splitSublist [] = []
 splitSublist (x:xs) = T.splitOn (T.pack "\t") (T.pack x) : (splitSublist xs)
 
+lerCidadesArquivo :: IO (Map.Map Int String)
 lerCidadesArquivo = do
         arquivo <- readFile "nodes.txt"
         let nodesRaw = T.splitOn (T.pack "\n") (T.pack arquivo) --nodes = lista de T.Text. Ex: ["1\tMarginal-12","2\tMarginal-10B"]
@@ -42,6 +44,10 @@ lerCidadesArquivo = do
         let nodes = splitSublist parsedList
         return (Map.fromList [(read (T.unpack (x!!0)) :: Int, T.unpack (x!!1))|x<-nodes])
 
+mostraCidadesArquivo :: [(Int, String)] -> IO ()
+mostraCidadesArquivo = mapM_ (\(a,b) -> putStrLn ((show a) ++" - "++b))
+
+lerEstradasArquivo :: IO [(Int, [(Int, Int)])]
 lerEstradasArquivo = do
         arquivo <- readFile "edges.txt"
         let edgesRaw = T.splitOn (T.pack "\n") (T.pack arquivo) --edges = lista de T.Text. Ex: ["1\tMarginal-12","2\tMarginal-10B"]

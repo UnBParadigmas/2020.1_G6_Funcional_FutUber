@@ -3,11 +3,13 @@ module Menu (menu) where
 import System.IO
 import Control.Monad
 import Data.Maybe
+import qualified Data.Map as Map
+
 
 import Main
 
 start = do {
-        Main.lerCidadesArquivo;
+        cidades <- Main.lerCidadesArquivo;
         Main.lerEstradasArquivo;
 }
 menu :: IO()
@@ -53,7 +55,9 @@ construirEstrada = do { putStrLn "Construindo estrada...";
 
 listarCidade :: IO()
 listarCidade = do { putStrLn "Listando cidades...";
-        putStrLn "1 - Voltar para o menu";
+        mapaCidade <- Main.lerCidadesArquivo;
+        Main.mostraCidadesArquivo (Map.toList mapaCidade);
+        putStrLn "\n\n1 - Voltar para o menu";
         opcao <- getLine;
         case opcao of
             "1" -> menu
