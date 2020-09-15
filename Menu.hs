@@ -2,9 +2,18 @@ module Menu (menu) where
 
 import System.IO
 import Control.Monad
+import Data.Maybe
 
+import Main
+
+start = do {
+        Main.lerCidadesArquivo;
+        Main.lerEstradasArquivo;
+}
 menu :: IO()
-menu = do { putStrLn "Menu: ";
+menu = do { 
+        
+        putStrLn "Menu: ";
         putStrLn "1 - Inserir nova cidade";
         putStrLn "2 - Construir estrada (liga duas cidades)";
         putStrLn "3 - Listar cidades";
@@ -22,12 +31,16 @@ menu = do { putStrLn "Menu: ";
             "6" -> passeio;
             "0" -> putStrLn "Sair...";
 }
-
+-- Verificar série 2 de duvidas
 inserirCidade :: IO()
-inserirCidade = do { putStrLn "Inserindo nova cidade...";
-        putStrLn "1 - Voltar para o menu";
-        opcao <- getLine;
-        case opcao of "1" -> menu
+inserirCidade = do { putStrLn " >> Inserir nova cidade <<";
+        --putStrLn "Digite o nome da cidade a ser inserida";
+        --cidade <- getLine;
+        --let aresta = parseAresta (cidade,[]);
+        --let arestaValue = Maybe.FromJust aresta
+        --Main.inserirCidadeSemAdjacentes cidade [aresta]
+        
+        menu; 
 }
 
 construirEstrada :: IO()

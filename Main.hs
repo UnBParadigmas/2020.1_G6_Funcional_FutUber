@@ -1,4 +1,4 @@
-module Main (main, grafo, inserirCidadeSemAdjacentes, adicionaCidadeAdjacente, parseAresta,lerCidadesArquivo,lerEstradasArquivo) where 
+module Main (main, grafo, inserirCidadeSemAdjacentes, adicionaCidadeAdjacente, parseAresta, lerCidadesArquivo, lerEstradasArquivo) where 
 
 import qualified Data.Maybe  as Maybe
 import qualified Data.Map as Map
@@ -41,6 +41,14 @@ lerCidadesArquivo = do
         let parsedList = [T.unpack x | x <- nodesRaw]
         let nodes = splitSublist parsedList
         return (Map.fromList [(read (T.unpack (x!!0)) :: Int, T.unpack (x!!1))|x<-nodes])
+
+lerEstradasArquivo = do
+        arquivo <- readFile "edges.txt"
+        let edgesRaw = T.splitOn (T.pack "\n") (T.pack arquivo) --edges = lista de T.Text. Ex: ["1\tMarginal-12","2\tMarginal-10B"]
+        let parsedList = [T.unpack x | x <- edgesRaw]
+        let edges = splitSublist parsedList
+        let estradas = [(read (T.unpack (x!!0)) :: Int,(read (T.unpack (x!!1)) :: Int,read (T.unpack (x!!2)) :: Int)) |x<-edges]
+        return (agrupaEstradas estradas)
 
 --https://stackoverflow.com/questions/12398458/how-to-group-similar-items-in-a-list-using-haskell
 agrupaEstradas :: (Eq a, Ord a) => [(a, b)] -> [(a, [b])]
