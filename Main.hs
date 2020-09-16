@@ -7,8 +7,7 @@ import Data.List
 import Data.Function (on)
 import Data.Ord (comparing)
 import Data.Graph (Table)
-
-
+import qualified Data.Tuple as Tuple
 
 type Vertice = Int
 type Distancia = Int
@@ -60,6 +59,45 @@ lerEstradasArquivo = do
 agrupaEstradas :: (Eq a, Ord a) => [(a, b)] -> [(a, [b])]
 agrupaEstradas = map (\l -> (fst . head $ l, map snd l)) . groupBy ((==) `on` fst)
           . sortBy (comparing fst)
+
+
+-- Busca o id da cidade adjacente do nó a para encontrar os vizinhos
+-- b == d
+-- Gera nova estrada passando pela cidade adjacente até o vizinho
+-- (a, e, c+f)
+-- Verifica se o caminho existe e compara o custo mantendo o menor deles
+-- (a, e)?
+
+-- Primeiro valor da lista de estradas
+-- let estradasMap = Map.fromList estradas
+-- [(1,[(2,10),(15,3),(14,3)]),(2,[(3,3),(17,3)]),(3,[(4,2),(21,5)]),(4,[(5,3),(22,5)]),
+-- (5,[(6,5),(23,5)]),(6,[(7,6)]),(7,[(8,7)]),(8,[(9,3),(27,6)]),(9,[(10,3),(34,5)]),
+-- (10,[(11,7),(31,6)]),(11,[(12,8)]),(12,[(13,4)]),(13,[(14,2),(24,4)]),(14,[(18,3)]),
+-- (15,[(16,4),(18,3)]),(16,[(17,5),(19,3)]),(17,[(20,3)]),(18,[(19,4)]),(19,[(20,5),(24,2)]),(20,[(21,3)]),
+-- (21,[(22,2)]),(22,[(23,3),(25,3)]),(23,[(27,2)]),
+-- (24,[(25,7),(28,2)]),(25,[(26,2),(29,3)]),(26,[(27,3),(34,4)]),
+-- (28,[(29,5),(30,2)]),(29,[(35,1)]),(30,[(31,4)]),(31,[(32,2)]),(32,[(33,3),(35,1)]),(33,[(34,2),(35,2)])]
+
+-- estradas <- lerEstradasArquivo
+-- let estradasMap = Map.fromList estradas
+-- let primeiro = Map.lookup 1 estradasMap
+-- let valoresPrimeiro = Maybe.fromJust primeiro
+-- valoresPrimeiroMap = Map.fromList valoresPrimeiro
+-- let primeiroAdjacentes = Map.keys valoresPrimeiroMap
+-- let estradasDosAdjacentesDoPrimeiro = [(x, Maybe.fromJust (Map.lookup x estradasMap)) |x<-primeiroAdjacentes]
+-- let distanciaPrimeiro = Map.elems (Map.fromList estradasDosAdjacentesDoPrimeiro)
+-- [gerarNovaTupla x | x<-distanciaPrimeiro]
+
+-- [(2,10),(15,3),(14,3)]
+-- [[(3,13),(17,13)],[(18,3)],[(16,4),(18,3)]]
+-- x = (2,[(3,3),(17,3)])
+gerarMenorCaminho estradasDosAdjacentesDoPrimeiro valoresPrimeiroMap = do
+        let distanciaPrimeiro = Map.elems (Map.fromList estradasDosAdjacentesDoPrimeiro)
+        print distanciaPrimeiro
+
+gerarNovaTupla distanciaPrimeiro = do
+        let valoresPrimeiroMap = [(2,10),(14,3),(15,3)]
+        [(Tuple.fst x, Tuple.snd x + Tuple.snd y) | x<-distanciaPrimeiro, y<-valoresPrimeiroMap]
 
 main :: IO ()
 main = return ()
