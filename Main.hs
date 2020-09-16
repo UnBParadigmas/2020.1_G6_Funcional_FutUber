@@ -86,7 +86,8 @@ agrupaEstradas = map (\l -> (fst . head $ l, map snd l)) . groupBy ((==) `on` fs
 -- let primeiroAdjacentes = Map.keys valoresPrimeiroMap
 -- let estradasDosAdjacentesDoPrimeiro = [(x, Maybe.fromJust (Map.lookup x estradasMap)) |x<-primeiroAdjacentes]
 -- let distanciaPrimeiro = Map.elems (Map.fromList estradasDosAdjacentesDoPrimeiro)
--- [gerarNovaTupla x | x<-distanciaPrimeiro]
+-- let todosCaminhos = [gerarNovaTupla x | x<-distanciaPrimeiro]
+-- excluiCaminhosDuplicados distanciaPrimeiro todosCaminhos
 
 -- [(2,10),(15,3),(14,3)]
 -- [[(3,13),(17,13)],[(18,3)],[(16,4),(18,3)]]
@@ -95,9 +96,23 @@ gerarMenorCaminho estradasDosAdjacentesDoPrimeiro valoresPrimeiroMap = do
         let distanciaPrimeiro = Map.elems (Map.fromList estradasDosAdjacentesDoPrimeiro)
         print distanciaPrimeiro
 
+
+gerarNovaTupla :: Num b => [(a, b)] -> [(a, b)]
 gerarNovaTupla distanciaPrimeiro = do
         let valoresPrimeiroMap = [(2,10),(14,3),(15,3)]
+        let tamanhoListaPrimeiro = length valoresPrimeiroMap
         [(Tuple.fst x, Tuple.snd x + Tuple.snd y) | x<-distanciaPrimeiro, y<-valoresPrimeiroMap]
+
+excluiCaminhosDuplicados :: Foldable t => t a1 -> [[a2]] -> [[a2]]
+excluiCaminhosDuplicados distanciaPrimeiro todosCaminhos =
+        [slice index (length x) (length distanciaPrimeiro) x  | (index,x) <- zip [0..] todosCaminhos]
+
+takeStep :: Int -> [a] -> [a]
+takeStep _ [] = []
+takeStep n (x:xs) = x : takeStep n (drop (n-1) xs)
+
+slice :: Int -> Int -> Int -> [a] -> [a]
+slice start stop step = takeStep step . take (stop - start) . drop start
 
 main :: IO ()
 main = return ()
