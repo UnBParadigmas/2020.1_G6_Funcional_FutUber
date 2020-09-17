@@ -1,9 +1,18 @@
-module Main (main, grafo, inserirCidadeSemAdjacentes, adicionaCidadeAdjacente, mostraCidadesArquivo, lerCidadesArquivo, lerEstradasArquivo) where 
+module Main (
+        main,
+        grafo,
+        inserirCidadeSemAdjacentes,
+        adicionaCidadeAdjacente,
+        mostraCidadesArquivo,
+        lerCidadesArquivo,
+        lerEstradasArquivo,
+        djistra
+) where 
 
 import qualified Data.Maybe  as Maybe
 import qualified Data.Map as Map
 import qualified Data.Text as T
-import Data.List
+import Data.List ( groupBy, sortBy, minimum )
 import Data.Function (on)
 import Data.Ord (comparing)
 import Data.Graph (Table)
@@ -52,7 +61,7 @@ lerEstradasArquivo = do
         let edgesRaw = T.splitOn (T.pack "\n") (T.pack arquivo) --edges = lista de T.Text. Ex: ["1\tMarginal-12","2\tMarginal-10B"]
         let parsedList = [T.unpack x | x <- edgesRaw]
         let edges = splitSublist parsedList
-        let estradas = [(read (T.unpack (x!!0)) :: Int,(read (T.unpack (x!!1)) :: Int,read (T.unpack (x!!2)) :: Int)) |x<-edges]
+        let estradas = [(read (T.unpack (x!!0)) :: Int,(read (T.unpack (x!!1)) :: Int,read (T.unpack (x!!2)) :: Int)) |x<-edges] ++ [(read (T.unpack (x!!1)) :: Int,(read (T.unpack (x!!0)) :: Int,read (T.unpack (x!!2)) :: Int)) |x<-edges]
         return (agrupaEstradas estradas)
 
 --https://stackoverflow.com/questions/12398458/how-to-group-similar-items-in-a-list-using-haskell
@@ -96,6 +105,27 @@ gerarMenorCaminho estradasDosAdjacentesDoPrimeiro valoresPrimeiroMap = do
         let distanciaPrimeiro = Map.elems (Map.fromList estradasDosAdjacentesDoPrimeiro)
         print distanciaPrimeiro
 
+djistra :: Int -> Int -> [(Int, [(Int, Int)])] -> Int
+djistra origem destino estradas = do
+        let menorCaminho = Maybe.fromJust (Map.lookup origem (Map.fromList estradas)) ++ [(origem, 0)]
+        djistra' destino estradas menorCaminho [origem] (Tuple.fst((mySort menorCaminho) !! 0))
+
+djistra' :: Int -> [(Int, [(Int, Int)])] -> [(Int, Int)] -> [Int] -> Int -> Int
+djistra' destino estradas menorCaminho visitados nextVisit = do
+        if destino `elem` visitados then
+                Maybe.fromJust (Map.lookup destino (Map.fromList menorCaminho))
+        else    if nextVisit == -1 then
+                        -1
+                else
+                        djistra'
+                                destino
+                                estradas
+                                (calculaMenorCaminho menorCaminho estradas nextVisit)
+                                (nextVisit : visitados)
+                                (proximaVisita
+                                        (mySort (calculaMenorCaminho menorCaminho estradas nextVisit))
+                                        (nextVisit : visitados)
+                                )
 
 gerarNovaTupla :: Num b => [(a, b)] -> [(a, b)]
 gerarNovaTupla distanciaPrimeiro = do
