@@ -135,7 +135,7 @@ gerarNovaTupla distanciaPrimeiro = do
 
 excluiCaminhosDuplicados :: Foldable t => t a1 -> [[a2]] -> [[a2]]
 excluiCaminhosDuplicados distanciaPrimeiro todosCaminhos =
-        [slice 0 (length x) (length distanciaPrimeiro) x  | x<-todosCaminhos]
+        [slice index (length x) (length distanciaPrimeiro) x  | (index,x) <- zip [0..] todosCaminhos]
 
 takeStep :: Int -> [a] -> [a]
 takeStep _ [] = []
