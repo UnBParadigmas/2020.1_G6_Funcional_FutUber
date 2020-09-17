@@ -6,7 +6,7 @@ module Main (
         mostraCidadesArquivo,
         lerCidadesArquivo,
         lerEstradasArquivo,
-        djistra
+        dijkstra
 ) where 
 
 import qualified Data.Maybe  as Maybe
@@ -104,20 +104,34 @@ agrupaEstradas = map (\l -> (fst . head $ l, map snd l)) . groupBy ((==) `on` fs
 gerarMenorCaminho estradasDosAdjacentesDoPrimeiro valoresPrimeiroMap = do
         let distanciaPrimeiro = Map.elems (Map.fromList estradasDosAdjacentesDoPrimeiro)
         print distanciaPrimeiro
+        
+type Poly = [(Int,Int)]
 
-djistra :: Int -> Int -> [(Int, [(Int, Int)])] -> Int
-djistra origem destino estradas = do
+mySort :: Ord b => [(a, b)] -> [(a, b)]
+mySort = sortBy (compare `on` snd)
+
+proximaVisita :: [(Int, Int)] -> [Int] -> Int
+proximaVisita [] visitados =
+        -1
+proximaVisita ((a,b):t) visitados =
+        if a `elem` visitados then
+                proximaVisita t visitados
+        else
+                a
+
+dijkstra :: Int -> Int -> [(Int, [(Int, Int)])] -> Int
+dijkstra origem destino estradas = do
         let menorCaminho = Maybe.fromJust (Map.lookup origem (Map.fromList estradas)) ++ [(origem, 0)]
-        djistra' destino estradas menorCaminho [origem] (Tuple.fst((mySort menorCaminho) !! 0))
+        dijkstra' destino estradas menorCaminho [origem] (Tuple.fst((mySort menorCaminho) !! 0))
 
-djistra' :: Int -> [(Int, [(Int, Int)])] -> [(Int, Int)] -> [Int] -> Int -> Int
-djistra' destino estradas menorCaminho visitados nextVisit = do
+dijkstra' :: Int -> [(Int, [(Int, Int)])] -> [(Int, Int)] -> [Int] -> Int -> Int
+dijkstra' destino estradas menorCaminho visitados nextVisit = do
         if destino `elem` visitados then
                 Maybe.fromJust (Map.lookup destino (Map.fromList menorCaminho))
         else    if nextVisit == -1 then
                         -1
                 else
-                        djistra'
+                        dijkstra'
                                 destino
                                 estradas
                                 (calculaMenorCaminho menorCaminho estradas nextVisit)
