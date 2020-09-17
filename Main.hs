@@ -119,6 +119,13 @@ proximaVisita ((a,b):t) visitados =
         else
                 a
 
+calculaMenorCaminho :: [(Int, Int)] -> [(Int, [(Int, Int)])] -> Int -> [(Int, Int)]
+calculaMenorCaminho menorCaminho estradas nextVisit = do
+        let menorCaminhoNext = Maybe.fromJust (Map.lookup nextVisit (Map.fromList estradas))
+        let distanciaNext = Maybe.fromJust (Map.lookup nextVisit (Map.fromList menorCaminho))
+        let menorCaminhoDuplo = agrupaEstradas (menorCaminho ++ [(Tuple.fst x, Tuple.snd x + distanciaNext) | x <- menorCaminhoNext])
+        [(Tuple.fst x, minimum(Tuple.snd x))  | x <- menorCaminhoDuplo]
+        
 dijkstra :: Int -> Int -> [(Int, [(Int, Int)])] -> Int
 dijkstra origem destino estradas = do
         let menorCaminho = Maybe.fromJust (Map.lookup origem (Map.fromList estradas)) ++ [(origem, 0)]
