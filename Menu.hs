@@ -2,19 +2,17 @@ module Menu (menu) where
 
 import System.IO
 import Control.Monad
+import Control.Monad.Reader
 import Data.Maybe
 import qualified Data.Map as Map
 
-
 import Main
 
-start = do {
-        cidades <- Main.lerCidadesArquivo;
-        Main.lerEstradasArquivo;
-}
+cidades = lerCidadesArquivo;
+estradas = lerEstradasArquivo;
+
 menu :: IO()
 menu = do { 
-        
         putStrLn "Menu: ";
         putStrLn "1 - Inserir nova cidade";
         putStrLn "2 - Construir estrada (liga duas cidades)";
@@ -33,6 +31,7 @@ menu = do {
             "6" -> passeio;
             "0" -> putStrLn "Sair...";
 }
+
 -- Verificar série 2 de duvidas
 inserirCidade :: IO()
 inserirCidade = do { putStrLn " >> Inserir nova cidade <<";
@@ -55,8 +54,8 @@ construirEstrada = do { putStrLn "Construindo estrada...";
 
 listarCidade :: IO()
 listarCidade = do { putStrLn "Listando cidades...";
-        mapaCidade <- Main.lerCidadesArquivo;
-        Main.mostraCidadesArquivo (Map.toList mapaCidade);
+        cidades <- cidades;
+        mostraCidadesArquivo (Map.toList cidades);
         putStrLn "\n\n1 - Voltar para o menu";
         opcao <- getLine;
         case opcao of
@@ -81,6 +80,15 @@ destruirEstrada = do { putStrLn "Destruindo estradas...";
 
 passeio :: IO()
 passeio = do { putStrLn "Passeando pela cidade...";
+        putStr "Digite o id cidade de origem: ";
+        origem <- getLine;
+        putStr "Digite o id cidade de destino: ";
+        destino <- getLine;
+
+        putStr "Menor custo: ";
+        estradas <- estradas;
+        print (dijkstra (read origem :: Int) (read destino :: Int) estradas);
+        
         putStrLn "1 - Voltar para o menu";
         opcao <- getLine;
         case opcao of
