@@ -101,7 +101,7 @@ passeio = do {
         mostraCidade cidades (read destino :: Int);
 
         putStr "\nMenor custo: ";
-        print (dijkstra (read origem :: Int) (read destino :: Int) estradas);
+        dijkstra (read origem :: Int) (read destino :: Int) estradas;
         
         putStrLn "\n1 - Voltar para o menu";
         opcao <- getLine;

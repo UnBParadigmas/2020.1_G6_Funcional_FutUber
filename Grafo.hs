@@ -25,25 +25,8 @@ separaValoresLinha :: [String] -> [[T.Text]]
 separaValoresLinha [] = []
 separaValoresLinha (linha:linhasRestantes) = T.splitOn (T.pack "\t") (T.pack linha) : (separaValoresLinha linhasRestantes)
 
--- lerCidadesArquivo :: IO (Map.Map Int String)
--- lerCidadesArquivo = do
---         arquivo <- readFile "nodes.txt"
---         let linhasSeparadas = T.splitOn (T.pack "\n") (T.pack arquivo)
---         let linhasString = [T.unpack x | x <- linhasSeparadas]
---         let cidades = separaValoresLinha linhasString
---         return (Map.fromList [(read (T.unpack (x!!0)) :: Int, T.unpack (x!!1))|x<-cidades])
-
 mostraCidadesArquivo :: [(Int, String)] -> IO ()
 mostraCidadesArquivo = mapM_ (\(idCidade, nomeCidade) -> putStrLn ((show idCidade) ++" - "++nomeCidade))
-
--- lerEstradasArquivo :: IO [(Int, [(Int, Int)])]
--- lerEstradasArquivo = do
---         arquivo <- readFile "edges.txt"
---         let linhasSeparadas = T.splitOn (T.pack "\n") (T.pack arquivo)
---         let linhasString = [T.unpack x | x <- linhasSeparadas]
---         let mapEstradas = separaValoresLinha linhasString
---         let estradas = [(read (T.unpack (x!!0)) :: Int,(read (T.unpack (x!!1)) :: Int,read (T.unpack (x!!2)) :: Int)) |x<-mapEstradas] ++ [(read (T.unpack (x!!1)) :: Int,(read (T.unpack (x!!0)) :: Int,read (T.unpack (x!!2)) :: Int)) |x<-mapEstradas]
---         return (agrupaEstradas estradas)
 
 lerEstradasArquivo :: IO [(Int, [(Int, Int)])]
 lerEstradasArquivo = do
@@ -95,18 +78,20 @@ calculaMenorCaminho menorCaminho estradas proximaVisita = do
         [(Tuple.fst x,(List.minimum(Tuple.snd x))) | x <- menorCaminhoDuplo]
         
 
--- dijkstra :: Int -> Int -> [(Int, [(Int, Int)])] -> [(Int, Int)]
+dijkstra :: Int -> Int -> [(Int, [(Int, Int)])] -> IO ()
 dijkstra origem destino estradas = do
         let menorCaminho = Maybe.fromJust (Map.lookup origem (Map.fromList estradas))
         let menorCaminhoComOrigem = [(Tuple.fst x,(Tuple.snd x, origem)) | x <- menorCaminho] ++ [(origem, (0, origem))]
         dijkstra' destino estradas menorCaminhoComOrigem [origem] (Tuple.fst((ordenar menorCaminhoComOrigem) !! 0))
 
--- dijkstra' :: Int -> [(Int, [(Int, Int)])] -> [(Int, (Int, Int))] -> [Int] -> Int -> [(Int, Int)]
-dijkstra' destino estradas menorCaminho visitados proximaVisita = do
-        if destino `elem` visitados then
-                reverteLista ((Tuple.fst (Maybe.fromJust (Map.lookup destino (Map.fromList menorCaminho))),destino) : listaCaminhos menorCaminho destino)
-        else    
-                dijkstra'
+dijkstra' :: Int -> [(Int, [(Int, Int)])] -> [(Int, (Int, Int))] -> [Int] -> Int -> IO ()
+dijkstra' destino estradas menorCaminho visitados proximaVisita
+        | destino `elem` visitados = 
+                mapM_ putStrLn (["Cidade: " ++ show (Tuple.snd x :: Int) ++ 
+                                 " -> Custo: " ++ show (Tuple.fst x :: Int)
+                                 | x <- (reverteLista ((Tuple.fst (Maybe.fromJust 
+                                 (Map.lookup destino (Map.fromList menorCaminho))),destino) : listaCaminhos menorCaminho destino))])
+        | otherwise = dijkstra'
                         destino
                         estradas
                         (calculaMenorCaminho menorCaminho estradas proximaVisita)
