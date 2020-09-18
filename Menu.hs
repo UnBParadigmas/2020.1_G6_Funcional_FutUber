@@ -6,55 +6,32 @@ import Control.Monad.Reader
 import Data.Maybe
 import qualified Data.Map as Map
 
-import Main
-
-cidades = lerCidadesArquivo;
-estradas = lerEstradasArquivo;
+import Grafo
 
 menu :: IO()
 menu = do { 
         putStrLn "Menu: ";
-        putStrLn "1 - Inserir nova cidade";
-        putStrLn "2 - Construir estrada (liga duas cidades)";
-        putStrLn "3 - Listar cidades";
-        putStrLn "4 - Excluir cidade";
-        putStrLn "5 - Destruir estrada";
-        putStrLn "6 - Passear pelas cidades";
+        putStrLn "1 - Listar cidades";
+        putStrLn "2 - Passear pelas cidades";
         putStrLn "0 - Sair";
         opcao <- getLine;
         case opcao of 
-            "1" -> inserirCidade;
-            "2" -> construirEstrada;
-            "3" -> listarCidade;
-            "4" -> excluirCidade;
-            "5" -> destruirEstrada;
-            "6" -> passeio;
+            "1" -> listarCidade;
+            "2" -> passeio;
             "0" -> putStrLn "Sair...";
-}
-
--- Verificar série 2 de duvidas
-inserirCidade :: IO()
-inserirCidade = do { putStrLn " >> Inserir nova cidade <<";
-        --putStrLn "Digite o nome da cidade a ser inserida";
-        --cidade <- getLine;
-        --let aresta = parseAresta (cidade,[]);
-        --let arestaValue = Maybe.FromJust aresta
-        --Main.inserirCidadeSemAdjacentes cidade [aresta]
-        
-        menu; 
-}
-
-construirEstrada :: IO()
-construirEstrada = do { putStrLn "Construindo estrada...";
-        putStrLn "1 - Voltar para o menu";
-        opcao <- getLine;
-        case opcao of 
-            "1" -> menu
+        -- putStrLn "1 - Inserir nova cidade";
+        -- putStrLn "2 - Construir estrada (liga duas cidades)";
+        -- putStrLn "4 - Excluir cidade";
+        -- putStrLn "5 - Destruir estrada";
+        --     "1" -> inserirCidade;
+        --     "2" -> construirEstrada;
+        --     "4" -> excluirCidade;
+        --     "5" -> destruirEstrada;
 }
 
 listarCidade :: IO()
 listarCidade = do { putStrLn "Listando cidades...";
-        cidades <- cidades;
+        cidades <- lerCidadesArquivo;
         mostraCidadesArquivo (Map.toList cidades);
         putStrLn "\n\n1 - Voltar para o menu";
         opcao <- getLine;
@@ -62,34 +39,28 @@ listarCidade = do { putStrLn "Listando cidades...";
             "1" -> menu
 }
 
-excluirCidade :: IO()
-excluirCidade = do { putStrLn "Excluindo cidades...";
-        putStrLn "1 - Voltar para o menu";
-        opcao <- getLine;
-        case opcao of
-            "1" -> menu
-}
-
-destruirEstrada :: IO()
-destruirEstrada = do { putStrLn "Destruindo estradas...";
-        putStrLn "1 - Voltar para o menu";
-        opcao <- getLine;
-        case opcao of
-            "1" -> menu
-}
-
 passeio :: IO()
-passeio = do { putStrLn "Passeando pela cidade...";
+passeio = do { 
+        estradas <- lerEstradasArquivo;
+        cidades <- lerCidadesArquivo;
+
+        putStrLn "\nListando cidades...";
+        mostraCidadesArquivo (Map.toList cidades);
+
+        putStrLn "\n\nPasseando pela cidade...";
         putStr "Digite o id cidade de origem: ";
         origem <- getLine;
+        putStr "Saindo de: ";
+        mostraCidade cidades (read origem :: Int);
         putStr "Digite o id cidade de destino: ";
         destino <- getLine;
+        putStr "Indo para: ";
+        mostraCidade cidades (read destino :: Int);
 
-        putStr "Menor custo: ";
-        estradas <- estradas;
+        putStr "\nMenor custo: ";
         print (dijkstra (read origem :: Int) (read destino :: Int) estradas);
         
-        putStrLn "1 - Voltar para o menu";
+        putStrLn "\n1 - Voltar para o menu";
         opcao <- getLine;
         case opcao of
             "1" -> menu
