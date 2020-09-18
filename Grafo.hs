@@ -63,17 +63,17 @@ calculaMenorCaminho menorCaminho estradas proximaVisita = do
         let menorCaminhoDuplo = agrupaEstradas (menorCaminho ++ [(Tuple.fst x, (Tuple.snd x + proximaDistancia, proximaVisita)) | x <- proximoMenorCaminho])
         [(Tuple.fst x,(List.minimum(Tuple.snd x))) | x <- menorCaminhoDuplo]
         
-dijkstra :: Int -> Int -> [(Int, [(Int, Int)])] -> Int
+
+dijkstra :: Int -> Int -> [(Int, [(Int, Int)])] -> [(Int, Int)]
 dijkstra origem destino estradas = do
         let menorCaminho = Maybe.fromJust (Map.lookup origem (Map.fromList estradas))
         let menorCaminhoComOrigem = [(Tuple.fst x,(Tuple.snd x, origem)) | x <- menorCaminho] ++ [(origem, (0, origem))]
         dijkstra' destino estradas menorCaminhoComOrigem [origem] (Tuple.fst((ordenar menorCaminhoComOrigem) !! 0))
 
-dijkstra' :: Int -> [(Int, [(Int, Int)])] -> [(Int, (Int,Int))] -> [Int] -> Int -> Int
+dijkstra' :: Int -> [(Int, [(Int, Int)])] -> [(Int, (Int, Int))] -> [Int] -> Int -> [(Int, Int)]
 dijkstra' destino estradas menorCaminho visitados proximaVisita = do
         if destino `elem` visitados then
-                --printarCaminho menorCaminho destino
-                Tuple.fst (Maybe.fromJust (Map.lookup destino (Map.fromList menorCaminho)))
+                reverteLista ((Tuple.fst (Maybe.fromJust (Map.lookup destino (Map.fromList menorCaminho))),destino) : listaCaminhos menorCaminho destino)
         else    
                 dijkstra'
                         destino
@@ -85,12 +85,12 @@ dijkstra' destino estradas menorCaminho visitados proximaVisita = do
                                 (proximaVisita : visitados)
                         )
 
--- printarCaminho menorCaminho destino
---         print (Tuple.fst (Maybe.fromJust (Map.lookup destino (Map.fromList menorCaminho))))
---         if (Tuple.fst (Maybe.fromJust (Map.lookup destino (Map.fromList menorCaminho)))) /= 0 then
---                 --let candidato = Tuple.snd (Maybe.fromJust(Map.lookup destino (Map.fromList menorCaminho)))
---                 printarCaminho menorCaminho Tuple.snd (Maybe.fromJust(Map.lookup destino (Map.fromList menorCaminho)))
 
--- printarCaminho menorCaminho destino 
-        -- |(Tuple.fst (Maybe.fromJust (Map.lookup destino (Map.fromList menorCaminho)))) == 0 = (Tuple.snd (Maybe.fromJust (Map.lookup destino (Map.fromList menorCaminho))))
-        -- | otherwise = printarCaminho menorCaminho (Tuple.snd (Maybe.fromJust(Map.lookup destino (Map.fromList menorCaminho))))
+listaCaminhos :: (Ord t, Num a, Eq a) => [(t, (a, t))] -> t -> [(a, t)]
+listaCaminhos menorCaminho destino
+        | (Tuple.fst (Maybe.fromJust (Map.lookup destino (Map.fromList menorCaminho)))) == 0 = []
+        | otherwise = Maybe.fromJust (Map.lookup destino (Map.fromList menorCaminho)) :  listaCaminhos menorCaminho (Tuple.snd (Maybe.fromJust(Map.lookup destino (Map.fromList menorCaminho))))
+
+reverteLista :: [a] -> [a]
+reverteLista [] = []
+reverteLista (x:xs) = reverteLista xs ++ [x]
