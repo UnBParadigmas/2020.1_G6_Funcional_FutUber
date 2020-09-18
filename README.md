@@ -17,11 +17,11 @@ Trata-se de um programa que lê 2 arquivos (nós e arestas), montando um grafo p
 
 ## Screenshots
 
-![Grafo de Vicente Pires](https://github.com/UnBParadigmas/2020.1_G6_Funcional_FutUber/blob/master/imagens/Grafo%20vicente.jpg)
+![Grafo de Vicente Pires](https://github.com/UnBParadigmas/2020.1_G6_Funcional_FutUber/blob/master/images/Grafo%20vicente.jpg)
 
-![Lista de Cidades](https://github.com/UnBParadigmas/2020.1_G6_Funcional_FutUber/blob/master/imagens/lista_cidades.png)
+![Lista de Cidades](https://github.com/UnBParadigmas/2020.1_G6_Funcional_FutUber/blob/master/images/lista_cidades.png)
 
-![Djikstra](https://github.com/UnBParadigmas/2020.1_G6_Funcional_FutUber/blob/master/imagens/djikstra.png)
+![Djikstra](https://github.com/UnBParadigmas/2020.1_G6_Funcional_FutUber/blob/master/images/djikstra.png)
 
 ## Instalação 
 **Linguagens**: Haskell<br>
