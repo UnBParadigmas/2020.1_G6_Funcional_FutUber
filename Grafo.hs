@@ -30,7 +30,7 @@ mostraCidadesArquivo = mapM_ (\(idCidade, nomeCidade) -> putStrLn ((show idCidad
 
 lerEstradasArquivo :: IO [(Int, [(Int, Int)])]
 lerEstradasArquivo = do
-        arquivo <- openFile "edges.txt" ReadMode
+        arquivo <- openFile "docs/edges.txt" ReadMode
         dados <- lerTodasAsLinhas arquivo
         hClose arquivo
         let mapEstradas = separaValoresLinha dados
@@ -39,7 +39,7 @@ lerEstradasArquivo = do
 
 lerCidadesArquivo :: IO (Map.Map Int String)
 lerCidadesArquivo = do
-        arquivo <- openFile "nodes.txt" ReadMode
+        arquivo <- openFile "docs/nodes.txt" ReadMode
         dados <- lerTodasAsLinhas arquivo
         hClose arquivo
         let cidades = separaValoresLinha dados

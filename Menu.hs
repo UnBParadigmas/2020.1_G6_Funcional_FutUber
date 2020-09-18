@@ -30,7 +30,7 @@ menu = do {
             "2" -> passeio;
             "3" -> inserirCidade;
             "4" -> construirEstrada;
-            "0" -> putStrLn "Sair...";
+            otherwise -> putStrLn "Sair...";
 }
 
 inserirCidade :: IO ()
@@ -69,8 +69,6 @@ listarCidade :: IO()
 listarCidade = do { putStrLn "Listando cidades...";
         cidades <- lerCidadesArquivo;
         mostraCidadesArquivo (Map.toList cidades);
-        putStrLn "\n- Tecle enter para voltar para o menu";
-        opcao <- getLine;
         menu
 }
 
