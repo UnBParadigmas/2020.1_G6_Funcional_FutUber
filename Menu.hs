@@ -5,6 +5,7 @@ import Control.Monad
 import Control.Monad.Reader
 import Data.Maybe
 import qualified Data.Map as Map
+import qualified Data.Tuple as Tuple
 
 import Grafo
     ( mostraCidade,
@@ -30,12 +31,6 @@ menu = do {
             "3" -> inserirCidade;
             "4" -> construirEstrada;
             "0" -> putStrLn "Sair...";
-        -- putStrLn "2 - Construir estrada (liga duas cidades)";
-        -- putStrLn "4 - Excluir cidade";
-        -- putStrLn "5 - Destruir estrada";
-        --     "1" -> inserirCidade;
-        --     "4" -> excluirCidade;
-        --     "5" -> destruirEstrada;
 }
 
 inserirCidade :: IO ()
@@ -44,10 +39,9 @@ inserirCidade = do {
         cidade <- getLine;
         inserirCidadeArquivo cidade;
 
-        putStrLn "\n\n1 - Voltar para o menu";
+        putStrLn "\n- Tecle enter para voltar para o menu";
         opcao <- getLine;
-        case opcao of
-            "1" -> menu
+        menu
 }
 
 construirEstrada :: IO ()
@@ -66,29 +60,24 @@ construirEstrada = do {
 
         construirEstradaArquivo origem destino custo;
 
-        putStrLn "\n\n1 - Voltar para o menu";
+        putStrLn "\n- Tecle enter para voltar para o menu";
         opcao <- getLine;
-        case opcao of
-            "1" -> menu
+        menu
 }
 
 listarCidade :: IO()
 listarCidade = do { putStrLn "Listando cidades...";
         cidades <- lerCidadesArquivo;
         mostraCidadesArquivo (Map.toList cidades);
-        putStrLn "\n\n1 - Voltar para o menu";
+        putStrLn "\n- Tecle enter para voltar para o menu";
         opcao <- getLine;
-        case opcao of
-            "1" -> menu
+        menu
 }
 
 passeio :: IO()
 passeio = do { 
         estradas <- lerEstradasArquivo;
         cidades <- lerCidadesArquivo;
-
-        putStrLn "\nListando cidades...";
-        mostraCidadesArquivo (Map.toList cidades);
 
         putStrLn "\n\nPasseando pela cidade...";
         putStr "Digite o id cidade de origem: ";
@@ -101,10 +90,19 @@ passeio = do {
         mostraCidade cidades (read destino :: Int);
 
         putStr "\nMenor custo: ";
-        dijkstra (read origem :: Int) (read destino :: Int) estradas;
+        mostraCaminho cidades (dijkstra (read origem :: Int) (read destino :: Int) estradas);
         
-        putStrLn "\n1 - Voltar para o menu";
+        putStrLn "\n- Tecle enter para voltar para o menu";
         opcao <- getLine;
-        case opcao of
-            "1" -> menu
+        menu
 }
+
+mostraCaminho :: (Ord k, Show a1, Show a2) => Map.Map k a1 -> [(a2, k)] -> IO ()
+mostraCaminho cidades [] =
+    print "Fim do passeio..."
+mostraCaminho cidades ((a,b):t) = do
+    print "Cidade:";
+    mostraCidade cidades (b);
+    print "-> Custo:";
+    print (a);
+    mostraCaminho cidades t;
