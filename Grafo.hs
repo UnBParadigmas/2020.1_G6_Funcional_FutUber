@@ -5,7 +5,8 @@ module Grafo (
         dijkstra,
         mostraCidade,
         inserirCidadeArquivo,
-        construirEstradaArquivo
+        construirEstradaArquivo,
+        gerarArquivoMontaGrafo
 ) where 
 
 import System.IO
@@ -16,6 +17,7 @@ import qualified Data.Tuple as Tuple
 import qualified Data.List as List
 import qualified Data.Function as Function
 import qualified Data.Ord as Ord
+import System.Process (callCommand)
 
 mostraCidade :: (Show a, Ord k) => Map.Map k a -> k -> IO ()
 mostraCidade cidades id = print (Maybe.fromJust (Map.lookup id cidades))
@@ -76,7 +78,6 @@ calculaMenorCaminho menorCaminho estradas proximaVisita = do
         let proximaDistancia = Tuple.fst (Maybe.fromJust (Map.lookup proximaVisita (Map.fromList menorCaminho)))
         let menorCaminhoDuplo = agrupaEstradas (menorCaminho ++ [(Tuple.fst x, (Tuple.snd x + proximaDistancia, proximaVisita)) | x <- proximoMenorCaminho])
         [(Tuple.fst x,(List.minimum(Tuple.snd x))) | x <- menorCaminhoDuplo]
-        
 
 dijkstra :: Int -> Int -> [(Int, [(Int, Int)])] -> [(Int, Int)]
 dijkstra origem destino estradas = do
@@ -108,8 +109,6 @@ reverteLista :: [a] -> [a]
 reverteLista [] = []
 reverteLista (x:xs) = reverteLista xs ++ [x]
 
-
-
 inserirCidadeArquivo :: [Char] -> IO ()
 inserirCidadeArquivo cidade = do 
         cidades <- lerCidadesArquivo
@@ -119,3 +118,25 @@ inserirCidadeArquivo cidade = do
 construirEstradaArquivo :: [Char] -> [Char] -> [Char] -> IO ()
 construirEstradaArquivo origem destino custo = 
         appendFile "edges.txt" ("\n" ++ origem ++ "\t" ++ destino ++ "\t" ++ custo);
+
+gerarArquivoMontaGrafo :: IO ()
+gerarArquivoMontaGrafo = do
+        estradas <- lerEstradasArquivo;
+        writeFile "grafo.dot" ("graph {\nrankdir = LR\n")
+        gerarArquivoMontaGrafo' estradas
+        callCommand "sfdp -x -Goverlap=scale -Tpng grafo.dot > grafo.png"
+
+gerarArquivoMontaGrafo' :: [(Int, [(Int, Int)])] -> IO ()
+gerarArquivoMontaGrafo' [] =
+        appendFile "grafo.dot" ("}\n")
+gerarArquivoMontaGrafo' ((a, b):t) = do
+        appendFile "grafo.dot" (show a ++ " -- { " )
+        gerarArquivoMontaGrafo'' b
+        gerarArquivoMontaGrafo' t
+
+gerarArquivoMontaGrafo'' :: [(Int, Int)] -> IO ()
+gerarArquivoMontaGrafo'' [] =
+        appendFile "grafo.dot" ("}\n")
+gerarArquivoMontaGrafo'' ((a,b):t) = do
+        appendFile "grafo.dot" (show a ++ " ")
+        gerarArquivoMontaGrafo'' t

@@ -7,14 +7,16 @@ import Data.Maybe
 import qualified Data.Map as Map
 import qualified Data.Tuple as Tuple
 
-import Grafo
-    ( mostraCidade,
-      lerCidadesArquivo,
-      mostraCidadesArquivo,
-      lerEstradasArquivo,
-      dijkstra,
-      inserirCidadeArquivo,
-      construirEstradaArquivo )
+import Grafo (
+        mostraCidade,
+        lerCidadesArquivo,
+        mostraCidadesArquivo,
+        lerEstradasArquivo,
+        dijkstra,
+        inserirCidadeArquivo,
+        construirEstradaArquivo,
+        gerarArquivoMontaGrafo 
+        )
 
 menu :: IO()
 menu = do { 
