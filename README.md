@@ -19,10 +19,10 @@ Trata-se de um programa que lê 2 arquivos (nós e arestas), montando um grafo p
 
 ## Screenshots
 
-Listagem de cidades (primeira opção do menu):
+Listagem de cidades (primeira opção do menu):<br>
 ![Lista de Cidades](https://github.com/UnBParadigmas/2020.1_G6_Funcional_FutUber/blob/master/images/lista_cidades.png)
 
-Listagem do caminho percorrido e o custo em Djikstra (segunda opção do menu):
+Listagem do caminho percorrido e o custo em Djikstra (segunda opção do menu):<br>
 ![Djikstra](https://github.com/UnBParadigmas/2020.1_G6_Funcional_FutUber/blob/master/images/djikstra.png)
 
 ## Instalação 
@@ -45,7 +45,7 @@ menu
 Siga as instruções do menu para interagir com o projeto.
 
 ## Vídeo
-<iframe width="560" height="315" src="https://www.youtube.com/embed/kRwyy-bqGzE" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+O video com a explicação de implementação e funcionamento do projeto se encontram [aqui](https://www.youtube.com/embed/kRwyy-bqGzE).
 
 ## Fontes
 [Grafos em haskell](https://szakallas.eu/2016/10/15/finding-shortest-paths-in-graphs-in-haskell/) <br>
