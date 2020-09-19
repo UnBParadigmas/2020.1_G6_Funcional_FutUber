@@ -113,11 +113,11 @@ inserirCidadeArquivo :: [Char] -> IO ()
 inserirCidadeArquivo cidade = do 
         cidades <- lerCidadesArquivo
         let ultimaCidade = (Tuple.fst (last (Map.toList cidades)))
-        appendFile "nodes.txt" ("\n" ++ (show (ultimaCidade+1)) ++ "\t" ++ cidade);
+        appendFile "docs/nodes.txt" ("\n" ++ (show (ultimaCidade+1)) ++ "\t" ++ cidade);
 
 construirEstradaArquivo :: [Char] -> [Char] -> [Char] -> IO ()
 construirEstradaArquivo origem destino custo = 
-        appendFile "edges.txt" ("\n" ++ origem ++ "\t" ++ destino ++ "\t" ++ custo);
+        appendFile "docs/edges.txt" ("\n" ++ origem ++ "\t" ++ destino ++ "\t" ++ custo);
 
 gerarArquivoMontaGrafo :: IO ()
 gerarArquivoMontaGrafo = do

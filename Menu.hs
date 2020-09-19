@@ -25,6 +25,7 @@ menu = do {
         putStrLn "2 - Passear pelas cidades";
         putStrLn "3 - Inserir nova cidade";
         putStrLn "4 - Construir nova estrada";
+        putStrLn "5 - Gerar imagem do grafo";
         putStrLn "0 - Sair";
         opcao <- getLine;
         case opcao of 
@@ -32,6 +33,7 @@ menu = do {
             "2" -> passeio;
             "3" -> inserirCidade;
             "4" -> construirEstrada;
+            "5" -> gerarImagemGrafo;
             otherwise -> putStrLn "Sair...";
 }
 
@@ -106,3 +108,8 @@ mostraCaminho cidades ((a,b):t) = do
     print "-> Custo:";
     print (a);
     mostraCaminho cidades t;
+
+gerarImagemGrafo :: IO ()
+gerarImagemGrafo = do
+        gerarArquivoMontaGrafo
+        menu
